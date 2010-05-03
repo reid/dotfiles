@@ -1,0 +1,202 @@
+#!/bin/bash
+
+echo "loading bashrc.reid family..."
+
+export PS1='\n[\u@\h \! \w]\n\[\e[32m\]$ \[\e[0m\]'
+export PATH="/usr/local/bin:$PATH"
+
+# Parts stolen from http://github.com/isaacs/dotfiles
+# Used under license
+
+if ! [ -f "$HOME" ]; then
+    export HOME="$(echo ~)"
+fi
+
+inpath () {
+    ! [ $# -eq 1 ] && echo "usage: inpath <file>" && return 1
+    f="$(which "$1" 2>/dev/null)"
+    [ -f "$f" ] && return 0
+    return 1
+}
+
+has_yinst=$(inpath yinst)
+
+# chooses the first argument that matches a file in the path.
+choose_first () {
+    for i in "$@"; do
+        if ! [ -f "$i" ] && inpath "$i"; then
+            i="$(which "$i")"
+        fi
+        if [ -f "$i" ]; then
+            echo $i
+            break
+        fi
+    done
+}
+
+export EDITOR=$(choose_first vim vi mate nano)
+
+prof () {
+    . $HOME/.bashrc.reid
+}
+editprof () {
+    local s=""
+    if [ "$1" != "" ]; then
+        s="-$1"
+    fi
+    $EDITOR $HOME/.bashrc.reid$s
+    prof
+}
+pushprof () {
+    [ "$1" == "" ] && echo "no hostname provided" && return 1
+    local failures=0
+    local rsync="rsync --copy-links -v -a -z"
+    for each in "$@"; do
+        if [ "$each" != "" ]; then
+            if $rsync $HOME/.{dotfiles,vim,tmux,profile,bash,git}* $each:~ && \
+                    $rsync $HOME/.ssh/*{.pub,authorized_keys,config} $each:~/.ssh/; then
+                echo "Pushed dotfiles and public keys to $each"
+            else
+                echo "Failed to push to $each"
+                let 'failures += 1'
+            fi
+        fi
+    done
+    return $failures
+}
+
+# substitute "this" for "that" if "this" exists and is in the path.
+substitute () {
+    ! [ $# -eq 2 ] && echo "usage: substitute <desired> <orig>" && return 1
+    inpath "$1" && new="$(which "$1")" && alias $2="$new"
+}
+
+_yapr () {
+    local yapr
+    if [ $has_yinst ]; then
+        yapr="yinst restart yapache"
+    elif inpath lighttpd.wrapper; then
+        yapr="sudo lighttpd.wrapper restart"
+    elif [ -f /etc/init.d/lighttpd ]; then
+        yapr="sudo /etc/init.d/lighttpd reload"
+    elif inpath apache2ctl; then
+        yapr="sudo apache2ctl graceful"
+    elif inpath apachectl; then
+        yapr="sudo apachectl graceful"
+    else
+        # very strange!
+        yapr="echo Looks like lighttpd and apache are not installed."
+    fi
+    alias yapr="$yapr"
+}
+_yapr
+unset _yapr
+
+_httpd () {
+    local yapr="$yapr"
+    local http_log="$(choose_first /opt/local/var/log/lighttpd/error.log /home/y/logs/yapache/php-error /home/y/logs/yapache/error /home/y/logs/yapache/error_log /home/y/logs/yapache/us/error_log /home/y/logs/yapache/us/error /opt/local/apache2/logs/error_log /var/log/httpd/error_log /var/log/httpd/error /private/var/log/apache2/error_log)"
+    yapl="tail -f $http_log | egrep -v '^E|udbClient'"
+    alias yaprl="$yapr;$yapl"
+    alias yapl="$yapl"
+}
+_httpd
+unset _httpd
+
+# instant web server
+inpath python && alias web="python -m SimpleHTTPServer"
+
+# git stuff
+alias gci="git commit"
+ghadd () {
+    local me="$(git config --get github.user)"
+    [ "$me" == "" ] && echo "Please enter your github name as the github.user git config." && return 1
+    # like: "git@github.com:$me/$repo.git"
+    local mine="$( git config --get remote.origin.url )"
+    local repo="${mine/git@github.com:$me\//}"
+    local nick="$1"
+    local who="$2"
+    [ "$who" == "" ] && who="$nick"
+    [ "$who" == "" ] && echo "Whose repo do you want to add?" && return 1
+    # eg: git://github.com/isaacs/jack.git
+    local theirs="git://github.com/$who/$repo"
+    git remote add "$nick" "$theirs"
+}
+alias gps="git push --all"
+
+# a context-sensitive rebasing git pull.
+# usage:
+# ghadd someuser  # add the github remote account
+# git checkout somebranch
+# gpm someuser    # similar to "git pull someuser somebranch"
+# Remote branch is rebased, and local changes stashed and reapplied if possible.
+gp () {
+    local s
+    local head
+    s=$(git stash 2>/dev/null)
+    head=$(basename $(git symbolic-ref HEAD 2>/dev/null) 2>/dev/null)
+    if [ "" == "$head" ]; then
+        echo_error "Not on a branch, can't pull"
+        return 1
+    fi
+    git fetch -a $1
+    git pull --rebase $1 "$head"
+    [ "$s" != "No local changes to save" ] && git stash pop
+}
+
+alias recently='git log --pretty=format:"%Cgreen%an %Cblue%ar %Creset%s"'
+
+inpath colordiff && alias endoftime='PAGER="colordiff | less -RS" git log -cc'
+
+# look up a word
+dict () {
+    curl -s dict://dict.org/d:$1 | perl -ne 's/\r//; last if /^\.$/; print if /^151/../^250/' | more
+}
+
+# get the ip address of a host easily.
+getip () {
+    for each in "$@"; do
+        echo $each
+        echo "nslookup:"
+        nslookup $each | grep Address: | grep -v '#' | egrep -o '([0-9]+\.){3}[0-9]+'
+        echo "ping:"
+        ping -c1 -t1 $each | egrep -o '([0-9]+\.){3}[0-9]+' | head -n1
+    done
+}
+
+# Show the IP addresses of this machine, with each interface that the address is on.
+ips () {
+    local interface=""
+    local types='vmnet|en|eth|vboxnet'
+    local i
+    for i in $(
+        ifconfig \
+        | egrep -o '(^('$types')[0-9]|inet (addr:)?([0-9]+\.){3}[0-9]+)' \
+        | egrep -o '(^('$types')[0-9]|([0-9]+\.){3}[0-9]+)' \
+        | grep -v 127.0.0.1
+    ); do
+        if ! [ "$( echo $i | perl -pi -e 's/([0-9]+\.){3}[0-9]+//g' )" == "" ]; then
+            interface="$i":
+        else
+            echo $interface $i
+        fi
+    done
+}
+
+[ $has_yinst ] && [ -f $HOME/.bashrc.reid-yinst ] && . $HOME/.bashrc.reid-yinst
+
+_bashrc_arch () {
+    local arch=$(uname -s)
+    [ -f $HOME/.bashrc.reid-$arch ] && . $HOME/.bashrc.reid-$arch
+}
+_bashrc_arch
+unset _bashrc_arch
+unset has_yinst
+
+# terminal multiplexer, like screen
+if inpath tmux && [ -z "$TMUX" ]; then
+    if [ "tmux ls" ]; then
+        tmux a
+    else
+        tmux
+    fi
+fi

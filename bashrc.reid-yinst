@@ -1,0 +1,22 @@
+#!/bin/bash
+
+ys () { yinst set "$@" | perl -pi -e 's/^yinst: //g;s/: /=/g'; }
+
+pulltrunk () {
+    svn merge $(grep 'svn+ssh' .svn/entries | head -n1 | perl -pi -e 's|branches/[^/]+|trunk|') .
+}
+
+substitute yssh ssh
+substitute yscp scp
+
+export SVN_RSH=$(choose_first yssh ssh)
+export CVS_RSH=$(SVN_RSH)
+
+export MAVEN_OPTS=-Djava.library.path=/home/y/lib
+
+if inpath keychain; then
+    keychain ~/.ssh/id_rsa
+    source ~/.keychain/resultfelt.corp.yahoo.com-sh
+fi
+
+alias pub=$HOME/dev/yos/yahoo/yap/admin/bin/bumper.php

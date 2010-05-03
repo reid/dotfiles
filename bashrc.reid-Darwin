@@ -1,0 +1,15 @@
+#!/bin/bash
+
+if [ "ping -c 1 -W 250 haven.corp" ]; then
+    alias dev="ssh resultfelt.corp"
+else
+    alias dev="ssh rburke@proxy.corp.yahoo.com -L 1080:socks.yahoo.com:1080"
+fi
+
+if inpath brew; then
+    alias inst="brew install"
+    alias yl="brew list"
+    yg () {
+        brew list | grep "$@"
+    }
+fi
