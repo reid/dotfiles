@@ -21,6 +21,22 @@ inpath () {
 
 has_yinst=$(inpath yinst)
 
+prompt () {
+    local ready
+    while true; do
+        echo "Continue? [yn]: "
+        read ready
+        case $ready
+        in
+            n*) return 1 ;;
+            N*) return 1 ;;
+            y*) return 0 ;;
+            Y*) return 0 ;;
+            *)
+        esac
+    done
+}
+
 # chooses the first argument that matches a file in the path.
 choose_first () {
     for i in "$@"; do
@@ -65,8 +81,18 @@ pushprof () {
     return $failures
 }
 
+if inpath node; then
+    if ! inpath jslint; then
+        jslint () {
+            echo "jslint doesn't exist! Would you like to install reid's node-jslint?"
+            prompt && node http://github.com/reid/node-jslint/raw/master/install.js && unset jslint && prof
+        }
+    fi
+fi
+
 # substitute "this" for "that" if "this" exists and is in the path.
 substitute () {
+    local new
     ! [ $# -eq 2 ] && echo "usage: substitute <desired> <orig>" && return 1
     inpath "$1" && new="$(which "$1")" && alias $2="$new"
 }
@@ -194,7 +220,7 @@ unset has_yinst
 
 # terminal multiplexer, like screen
 if inpath tmux && [ -z "$TMUX" ]; then
-    if [ "tmux ls" ]; then
+    if "tmux ls 2>&1 | grep -q not"; then
         tmux a
     else
         tmux

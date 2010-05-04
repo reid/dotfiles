@@ -6,10 +6,29 @@ else
     alias dev="ssh rburke@proxy.corp.yahoo.com -L 1080:socks.yahoo.com:1080"
 fi
 
+installbrew () {
+    echo "Install homebrew?"
+    if prompt; then
+        curl http://gist.github.com/raw/323731/HEAD/install_homebrew.rb -O /tmp/homebrew.rb
+        ruby /tmp/homebrew.rb && prof
+        rm /tmp/homebrew.rb
+   fi
+}
+
 if inpath brew; then
     alias inst="brew install"
     alias yl="brew list"
     yg () {
         brew list | grep "$@"
     }
+else
+    alias brew="installbrew"
+fi
+
+if ! inpath node; then
+    node () {
+        echo "nodejs isn't installed! Would you like to install it?"
+        prompt && brew install node && prof
+    }
+    alias jslint="node"
 fi
