@@ -220,7 +220,7 @@ unset has_yinst
 
 # terminal multiplexer, like screen
 if inpath tmux && [ -z "$TMUX" ]; then
-    if "tmux ls 2>&1 | grep -q not"; then
+    if `tmux ls 2>&1 | grep -q not`; then
         tmux a
     else
         tmux
