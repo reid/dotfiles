@@ -1,10 +1,6 @@
 #!/bin/bash
-
-if [ "ping -c 1 -W 250 haven.corp" ]; then
-    alias dev="ssh resultfelt.corp"
-else
-    alias dev="ssh rburke@proxy.corp.yahoo.com -L 1080:socks.yahoo.com:1080"
-fi
+alias dev="ssh rburke@resultfelt.corp"
+alias proxy="ssh rburke@proxy.corp.yahoo.com -L 1080:socks.yahoo.com:1080"
 
 installbrew () {
     echo "Install homebrew?"
