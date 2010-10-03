@@ -1,4 +1,6 @@
 #!/bin/bash
+
+alias socks="sudo networksetup -setsocksfirewallproxystate AirPort"
 alias dev="ssh rburke@resultfelt.corp"
 alias proxy="ssh rburke@proxy.corp.yahoo.com -L 1080:socks.yahoo.com:1080"
 
