@@ -2,14 +2,6 @@
 alias dev="ssh rburke@resultfelt.corp"
 alias proxy="ssh rburke@proxy.corp.yahoo.com -L 1080:socks.yahoo.com:1080"
 
-installbrew () {
-    echo "Install homebrew?"
-    if prompt; then
-        curl http://gist.github.com/raw/323731/HEAD/install_homebrew.rb -O /tmp/homebrew.rb
-        ruby /tmp/homebrew.rb && prof
-        rm /tmp/homebrew.rb
-   fi
-}
 
 if inpath brew; then
     alias inst="brew install"
