@@ -81,15 +81,6 @@ pushprof () {
     return $failures
 }
 
-if inpath node; then
-    if ! inpath jslint; then
-        jslint () {
-            echo "jslint doesn't exist! Would you like to install reid's node-jslint?"
-            prompt && node http://github.com/reid/node-jslint/raw/master/install.js && unset jslint && prof
-        }
-    fi
-fi
-
 # substitute "this" for "that" if "this" exists and is in the path.
 substitute () {
     local new
