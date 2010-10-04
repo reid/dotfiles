@@ -18,5 +18,3 @@ if inpath keychain; then
     keychain ~/.ssh/id_rsa
     source ~/.keychain/resultfelt.corp.yahoo.com-sh
 fi
-
-alias pub=$HOME/dev/yos/yahoo/yap/admin/bin/bumper.php
