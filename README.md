@@ -12,6 +12,20 @@ Vim color scheme
 
 I use the [IR\_Black Vim color scheme][ir_black-vim]. If you use Vim in a terminal, it should be used with the [IR\_Black terminal colors][ir_black-term] for the Mac OS X Terminal and the [TerminalColours][] [SIMBL][] plugin.
 
+VimOutliner
+-----------
+
+VimOutliner is GPL, so I'm not including it here.
+
+Download VimOutliner from here: <http://www.troubleshooters.com/projects/alt-vimoutliner-litt/download/0.3.4/vimoutliner-0.3.4.tgz>
+
+Copy `.vim/colors/vo_dark.vim` to `vo_ir_black.vim`. Replace: `%s/ctermbg=black/ctermbg=NONE/g` and save.
+
+Add this snippet to the end of `.vim/syntax/vo_base.vim`:
+
+    setlocal runtimepath+=$HOME/.vimoutliner,$HOME
+    runtime! .vimoutlinerrc vimoutlinerrc
+
 Thanks
 ------
 

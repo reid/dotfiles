@@ -25,3 +25,5 @@ set tabstop=4
 set expandtab
 set undolevels=1000
 set number
+filetype plugin indent on
+syntax on
