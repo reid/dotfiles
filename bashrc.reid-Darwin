@@ -1,6 +1,6 @@
 #!/bin/bash
 
-export PATH="`brew --prefix node`/bin:$PATH"
+#export PATH="`brew --prefix node`/bin:$PATH"
 
 alias socks="sudo networksetup -setsocksfirewallproxystate AirPort"
 alias proxy="ssh rburke@proxy.corp.yahoo.com -L 1080:socks.yahoo.com:1080"
