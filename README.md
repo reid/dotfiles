@@ -12,6 +12,11 @@ Vim color scheme
 
 I use the [IR\_Black Vim color scheme][ir_black-vim]. If you use Vim in a terminal, it should be used with the [IR\_Black terminal colors][ir_black-term] for the Mac OS X Terminal and the [TerminalColours][] [SIMBL][] plugin.
 
+iTerm 2
+-------
+
+To use my iTerm 2 settings, copy `com.googlecode.iterm2.plist` into `~/Library/Preferences`.
+
 VimOutliner
 -----------
 
