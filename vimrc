@@ -3,6 +3,8 @@ set term=screen
 set background=dark
 colo ir_black
 
+call pathogen#infect()
+
 syntax enable
 
 hi DiffAdd term=reverse cterm=bold ctermbg=darkgreen ctermfg=black
