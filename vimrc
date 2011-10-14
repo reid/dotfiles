@@ -3,6 +3,8 @@ set term=screen
 set background=dark
 colo ir_black
 
+let g:vimroom_background = "none"
+
 call pathogen#infect()
 
 syntax enable
@@ -27,5 +29,9 @@ set tabstop=4
 set expandtab
 set undolevels=1000
 set number
+
+let mapleader = ","
+set title
+
 filetype plugin indent on
 syntax on
