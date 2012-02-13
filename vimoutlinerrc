@@ -1,4 +1,0 @@
-let g:vo_modules_load = "checkbox:hoist"
-setlocal nowrap
-let g:hoistParanoia=0
-colorscheme vo_ir_black
