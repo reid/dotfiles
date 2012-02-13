@@ -213,6 +213,9 @@ alias grep='grep --color=tty'
 alias fgrep='fgrep --color=tty'
 alias egrep='egrep --color=tty'
 
+# Node version manager
+[ -f ~/.nvm/nvm.sh ] && . ~/.nvm/nvm.sh
+
 # terminal multiplexer, like screen
 if inpath tmux && [ -z "$TMUX" ]; then
     if `tmux ls 2>&1 | grep -q not`; then
