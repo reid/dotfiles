@@ -209,6 +209,10 @@ _bashrc_arch
 unset _bashrc_arch
 unset has_yinst
 
+alias grep='grep --color=tty'
+alias fgrep='fgrep --color=tty'
+alias egrep='egrep --color=tty'
+
 # terminal multiplexer, like screen
 if inpath tmux && [ -z "$TMUX" ]; then
     if `tmux ls 2>&1 | grep -q not`; then
