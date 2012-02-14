@@ -7,6 +7,15 @@ I don't recommend using these files verbatim. You should probably just pick and 
 
 Read the LICENSE file for license and copying information.
 
+Terminal setup on OS X
+----------------------
+
+ 1. Install Homebrew: `/usr/bin/ruby -e "$(curl -fsSL https://raw.github.com/gist/323731)"`
+ 2. Install tmux: `brew install tmux`
+ 3. Fix pbcopy: `brew install reattach-to-user-namespace --wrap-launchctl --wrap-pbcopy-and-pbpaste`
+ 4. Install Node.js from the official installer.
+ 5. Install Nave: `npm i -g nave`
+
 Vim color scheme
 ----------------
 
