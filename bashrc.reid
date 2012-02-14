@@ -218,7 +218,8 @@ alias egrep='egrep --color=tty'
 
 # terminal multiplexer, like screen
 if inpath tmux && [ -z "$TMUX" ]; then
-    if ! `tmux ls 2>&1`; then
+    # use echo to trim the wc output on OS X
+    if [[ $(echo `tmux ls 2>&1 | grep failed | wc -l`) == "1" ]]; then
         tmux
     else
         tmux a
