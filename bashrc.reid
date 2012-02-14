@@ -213,9 +213,6 @@ alias grep='grep --color=tty'
 alias fgrep='fgrep --color=tty'
 alias egrep='egrep --color=tty'
 
-# Node version manager
-[ -f ~/.nvm/nvm.sh ] && . ~/.nvm/nvm.sh
-
 # terminal multiplexer, like screen
 if inpath tmux && [ -z "$TMUX" ]; then
     # use echo to trim the wc output on OS X
