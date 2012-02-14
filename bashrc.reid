@@ -218,7 +218,7 @@ alias egrep='egrep --color=tty'
 
 # terminal multiplexer, like screen
 if inpath tmux && [ -z "$TMUX" ]; then
-    if `tmux ls 2>&1 | grep -q not`; then
+    if ! `tmux ls 2>&1`; then
         tmux
     else
         tmux a
