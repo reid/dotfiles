@@ -86,6 +86,11 @@ systemsetup -setrestartfreeze on
 # Check for software updates daily, not just once per week
 defaults write com.apple.SoftwareUpdate ScheduleFrequency -int 1
 
+# Disable volume change beeps and UI sound effects (may require restart)
+defaults write com.apple.sound.beep.feedback -int 0
+defaults write com.apple.systemsound com.apple.sound.beep.volume -float 0
+defaults write com.apple.systemsound com.apple.sound.uiaudio.enabled -int 0
+
 ###############################################################################
 # Trackpad, mouse, keyboard, Bluetooth accessories, and input                 #
 ###############################################################################
